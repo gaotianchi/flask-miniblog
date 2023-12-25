@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="icon" href="https://placeholder.pics/svg/100" type="image/x-icon">
+    <title>{% block title %}Mini blog{% endblock title %}</title>
+    {% block style %}{% endblock style %}
+    <style>
+        .logoandblogtitlecontainer {
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .blogtitlecontent {
+            font-size: 2rem;
+            font-weight: 800px;
+        }
+
+        .logocontainer {
+            margin: 5px;
+        }
+
+        .blogtitlecontainer {
+            padding: 0 12px;
+        }
+
+        .container_ {
+            display: grid;
+            height: 100%;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .copyrightcontainer {
+            text-align: center;
+            padding: 32px 0 12px 0;
+        }
+
+        .footercontainer {
+            height: 100%;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        header {
+            border-bottom: 1px solid #cccccc;
+            justify-content: space-between;
+        }
+
+        footer {
+            border-top: 1px solid #cccccc;
+        }
+
+        .navitemcontainer {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navitemcontent {
+            padding: 10px;
+        }
+
+        .naviconcontainer {
+            padding: 10px;
+        }
+
+        .navcontainer_ {
+            justify-content: space-between;
+        }
+
+        .flashmessageconotainer {
+            justify-content: space-between;
+            background-color: rgb(255, 255, 176);
+        }
+
+        .additemsiconcontainer {
+            position: relative;
+        }
+
+        .actiondetailcontainer {
+            position: absolute;
+            width: 150px;
+            min-width: max-content;
+            padding: 12px 24px;
+            border: 1px solid black;
+            background-color: #cccccc;
+            right: 0;
+            display: none;
+        }
+
+        .actiondetailcontainer_ {
+            flex-direction: column;
+        }
+
+        .detailitem {
+            margin-bottom: 32px;
+            font-size: medium;
+        }
+
+        .detailitem:hover {
+            font-size: large;
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flashmessageconotainer flexbox">
+        <ul class=flashes>
+            {% for message in messages %}
+            <li class="flashmessagecontent">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        <button class="closeflashmessage" onclick="removeFlashContainer()">close</button>
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div class="container_">
+        <header class="flexbox">
+            <div class="logoandtitlecontainer_ inlinebox">
+                <div class="logoandblogtitlecontainer flexbox">
+                    <div class="logocontainer">
+                        <a href="/">
+                            <img src="https://placeholder.pics/svg/100" alt="logo">
+                        </a>
+                    </div>
+                    <div class="blogtitlecontainer">
+                        <span class="blogtitlecontent">
+                            <a href="/">Website Site</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <nav class="inlinebox navcontainer">
+                <div class="navcontainer_ flexbox">
+                    {% if current_user %}
+                    <div class="navitemcontainer flexbox">
+                        <div class="naviconcontainer additemsiconcontainer" id="additemsiconcontainer">
+                            <div class="inlinebox">
+                                <img class="navicon" src="https://placeholder.pics/svg/50" alt="additems icon">
+                            </div>
+                            <div class="actiondetailcontainer" id="actiondetailcontainer">
+                                <div class="actiondetailcontainer_ flexbox">
+                                    <a href="{{ url_for('author.add_post') }}">
+                                        <span class="addpostcontent detailitem">
+                                            Add post
+                                        </span>
+                                    </a>
+                                    <a href="#">
+                                        <span class="addcategorycontent detailitem">
+                                            Add category
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inlinebox">
+                            <span class="navitemcontent navarchive">New</span>
+                        </div>
+                    </div>
+                    <div class="navitemcontainer flexbox">
+                        <div class="naviconcontainer manageindexiconcontainer">
+                            <a href="{{ url_for('author.manage_index')}}">
+                                <img class="navicon" src="https://placeholder.pics/svg/50" alt="manageindex icon">
+                            </a>
+                        </div>
+                        <a href="{{ url_for('author.manage_index')}}">
+                            <span class="navitemcontent navarchive">Manage</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="navitemcontainer flexbox">
+                        <div class="naviconcontainer homeiconcontainer">
+                            <a href="{{ url_for('visitor.index')}}">
+                                <img class="navicon" src="https://placeholder.pics/svg/50" alt="home icon">
+                            </a>
+                        </div>
+                        <a href="{{ url_for('visitor.index')}}">
+                            <span class="navitemcontent navarchive">Home</span>
+                        </a>
+                    </div>
+                    <div class="navitemcontainer flexbox">
+                        <div class="naviconcontainer archiveiconcontainer">
+                            <a href="{{ url_for('visitor.archive_post') }}">
+                                <img class="navicon" src="https://placeholder.pics/svg/50" alt="archive icon">
+                            </a>
+                        </div>
+                        <a href="{{ url_for('visitor.archive_post') }}">
+                            <span class="navitemcontent navarchive">Archive</span>
+                        </a>
+                    </div>
+                    <div class="navitemcontainer flexbox">
+                        <div class="naviconcontainer abouticoncontainer">
+                            <a href="#">
+                                <img class="navicon" src="https://placeholder.pics/svg/50" alt="about icon">
+                            </a>
+                        </div>
+                        <a href="#">
+                            <span class="navitemcontent navarchive">About</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        {% block main %}{% endblock main %}
+        <footer>
+            <div class="footercontainer flexbox">
+                <div class="copyrightcontainer">
+                    <small class="copyrightcontent">Copyright © 2023-2024 Gao Tianchi</small>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        function removeFlashContainer() {
+            const flashContainer = document.querySelector('.flashmessageconotainer');
+            flashContainer.remove();
+        }
+        const newActionDetailButton = document.getElementById("additemsiconcontainer");
+        const detailBox = document.getElementById("actiondetailcontainer");
+        newActionDetailButton.addEventListener("mouseover", function () {
+            detailBox.style.display = "block";
+        });
+
+        newActionDetailButton.addEventListener("mouseout", function () {
+            detailBox.style.display = "none";
+        });
+    </script>
+    {% block script %}
+    {% endblock script %}
+</body>
+
+</html>

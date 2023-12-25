@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Archive post{% endblock title %}
+
+{% block style %}
+<style>
+    .posttitlecontainer {
+        padding: 12px 0;
+    }
+
+    .postmetadatacontent {
+        font-size: small;
+        font-style: italic;
+    }
+
+    .postitemscontainer {
+        flex-direction: column;
+        padding: 0 32px;
+        margin-bottom: 22px;
+    }
+</style>
+{% endblock style %}
+
+{% block main %}
+<div class="postitemscontainer_">
+    {% if posts %}
+    {% for post in posts %}
+    <div class="postitemscontainer flexbox">
+        <div class="posttitlecontainer inlinebox">
+            <span class="posttitlecontent">
+                <a href="{{ url_for('visitor.read_post', post_id=post.id) }}">{{ post.title }}</a>
+            </span>
+        </div>
+        <div class="postmetadatacontaienr inlinebox">
+            <span class="postmetadatacontent">
+                Updated at {{ post.updated.strftime("%B %d") }} classified as
+                <a href="{{ url_for('visitor.archive_post', category=post.category.title )}}">{{ post.category.title }}
+                </a>
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <span class="nopostsmessagecontainer">No posts was published yet.</span>
+    {% endif %}
+</div>
+{% endblock main %}

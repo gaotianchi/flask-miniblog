@@ -1,0 +1,21 @@
+html, body {
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    height: 100%;
+}
+
+.flexbox {
+    display: flex;
+}
+
+.inlinebox {
+    display: inline-block;
+}
+
+textarea {
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+}
+

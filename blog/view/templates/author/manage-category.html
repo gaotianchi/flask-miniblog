@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Manage categories{% endblock title %}
+
+{% block style %}
+<style>
+    .actionscontainer {
+        justify-content: space-around;
+    }
+
+    .actionitem {
+        padding: 0 20px;
+        border: 1px solid black;
+        font-size: medium;
+        margin: 5px 12px;
+    }
+
+
+    .deletecategorysubmitbutton {
+        border: none;
+        background-color: inherit;
+        color: red;
+    }
+
+    table {
+        padding: 12px 22px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table td,
+    table th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    table tr:hover {
+        background-color: #ddd;
+    }
+
+    table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #abb0ae;
+    }
+
+    .tablecontainer {
+        padding: 12px 32px;
+    }
+</style>
+{% endblock style %}
+
+{% block main %}
+<div class="managepostscontainermain">
+    {% if categories %}
+    <table>
+        <tr>
+            <th>Index</th>
+            <th>Title</th>
+            <th>Body</th>
+            <th>Posts</th>
+            <th>Actions</th>
+        </tr>
+        {% for category in categories %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ category.title }}</td>
+            <td>{{ category.body }}</td>
+            <td>
+                <a href="{{ url_for('visitor.archive_post', category=category.title) }}">
+                    {{ category.posts|length }}
+                </a>
+            </td>
+            <td>
+                <div class="flexbox actionscontainer">
+                    <div class="inlinebox actionitem">
+                        <a href="{{ url_for('author.update_category', category_id=category.id) }}">
+                            <span class="editcontent">Edit</span>
+                        </a>
+                    </div>
+                    <div class="inlinebox actionitem">
+                        <button type="button" class="deletecategorysubmitbutton" data-buttonid="{{ category.id }}">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+{% endblock main %}
+
+{% block script %}
+
+{% endblock script %}

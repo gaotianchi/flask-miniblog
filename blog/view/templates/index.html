@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block main %}
+{% if current_user %}
+<p>Welcome, {{ current_user.username }}!</p>
+{% else %}
+<p>Please <a href="{{ url_for('account.sign_in')}}">sign in!</a></p>
+{% endif %}
+{% endblock main %}

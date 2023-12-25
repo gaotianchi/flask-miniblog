@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ post.title }}{% endblock title %}
+{% block style %}
+<style>
+    .submitbuttoncontainer {
+        justify-content: flex-end;
+        padding: 12px;
+    }
+
+    .publishbutton {
+        height: 30px;
+        width: 70px;
+        background-color: brown;
+        color: white;
+        border-radius: 5px;
+    }
+
+    #targetDiv {
+        border: 1px solid black;
+    }
+
+    .postbodypreviewcontainer {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        height: max-content;
+        min-height: 95%;
+        margin-bottom: 14px;
+        margin-right: 12px;
+    }
+
+    .posttitlecontainer {
+        padding: 0 12px;
+    }
+
+    .postbodycontainer {
+        padding-left: 12px;
+        margin-bottom: 32px;
+    }
+
+    .editor {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        row-gap: 5px;
+    }
+
+    .editorandpreview {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 5px;
+    }
+
+    #postbody {
+        width: 100%;
+        height: 95%;
+        min-height: 600px;
+        resize: none;
+    }
+
+    #posttitle {
+        width: 100%;
+        font-size: 2rem;
+        overflow: hidden;
+        resize: none;
+        font-weight: 700;
+    }
+</style>
+{% endblock style %}
+{% block main %}
+<form class="editor" action="{{ url_for('author.update_post', post_id=post.id) }}" method="post">
+    <div class="posttitlecontainer">
+        <textarea oninput="autoResize()" name="posttitle" id="posttitle" rows="1" placeholder="post title"
+            required>{{ post.title }}</textarea>
+    </div>
+    <div class="editorandpreview">
+        <div class="postbodycontainer">
+            <textarea name="postbody" id="postbody" required>{{ post.body }}</textarea>
+            <div class="selectcategorycontainer">
+                <label for="postcategory">Category</label>
+                <select name="postcategory" id="postcategory">
+                    {% for category in categories %}
+                    {% if category.id == post.category.id %}
+                    <option value="{{ category.id }}" selected>{{ category.title }}</option>
+                    {% else %}
+                    <option value="{{ category.id }}">{{ category.title }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="postbodypreviewcontainer">
+            <div class="postbodypreview" id="targetDiv"></div>
+            <div class="submitbuttoncontainer flexbox">
+                <button type="submit" class="publishbutton">Publish</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock main %}
+
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/showdown@2.0.3/dist/showdown.min.js"></script>
+
+<script>
+    const postBodyTextArea = document.getElementById("postbody");
+    const converter = new showdown.Converter();
+
+    postBodyTextArea.addEventListener("input",
+        function (e) {
+            renderPost()
+        }
+    )
+    window.addEventListener("load",
+        function (e) {
+            renderPost()
+        }
+    )
+
+    function renderPost() {
+        const previewArea = document.getElementById("targetDiv");
+        let postBodyTextAreaValue = postBodyTextArea.value;
+        let htmlResult = converter.makeHtml(postBodyTextAreaValue);
+        previewArea.innerHTML = htmlResult;
+    }
+
+    function autoResize() {
+        const titletextarea = document.getElementById('posttitle');
+        titletextarea.style.height = 'auto';
+        titletextarea.style.height = titletextarea.scrollHeight + 'px';
+    }
+</script>
+{% endblock script %}

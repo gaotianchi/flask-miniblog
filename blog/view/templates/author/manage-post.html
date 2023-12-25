@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Manage posts{% endblock title %}
+
+{% block style %}
+<style>
+    .actionscontainer {
+        justify-content: space-around;
+    }
+
+    .actionitem {
+        padding: 0 20px;
+        border: 1px solid black;
+        font-size: medium;
+        margin: 5px 12px;
+    }
+
+
+    .deletepostsubmitbutton {
+        border: none;
+        background-color: inherit;
+        color: red;
+    }
+
+    table {
+        padding: 12px 22px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table td,
+    table th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    table tr:hover {
+        background-color: #ddd;
+    }
+
+    table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #abb0ae;
+    }
+
+    .managepostscontainermain {
+        padding: 12px 32px;
+    }
+</style>
+{% endblock style %}
+
+{% block main %}
+<div class="managepostscontainermain">
+    {% if posts %}
+    <div class="tablecontainer">
+        <table>
+            <tr>
+                <th>Index</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            {% for post in posts %}
+            <tr data-post="{{ post.id }}">
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ url_for('visitor.read_post', post_id=post.id) }}">
+                        {{ post.title }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ url_for('visitor.archive_post', category=post.category.title) }}">
+                        {{ post.category.title }}
+                    </a>
+                </td>
+                <td>{{ post.created.strftime("%Y/%m/%d") }}</td>
+                <td>
+                    <div class="flexbox actionscontainer">
+                        <div class="inlinebox actionitem">
+                            <a href="{{ url_for('author.update_post', post_id=post.id) }}">
+                                <span class="editcontent">Edit</span>
+                            </a>
+                        </div>
+                        <div class="inlinebox actionitem">
+                            <button type="button" class="deletepostsubmitbutton" data-buttonid="{{ post.id }}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <p>No post has published.</p>
+    {% endif %}
+</div>
+{% endblock main %}
+
+{% block script %}
+<script>
+    const deleteButtons = document.querySelectorAll(".deletepostsubmitbutton");
+
+    deleteButtons.forEach((deleteButton) => {
+        deleteButton.addEventListener("click", function (e) {
+
+            let currentButton = e.target;
+            let ancestorElement = currentButton.parentElement;
+            while (ancestorElement) {
+                if (ancestorElement.tagName === "tr") {
+                    console.log(ancestorElement);
+                    ancestorElement.remove()
+                    break;
+                }
+                ancestorElement = ancestorElement.parentElement;
+            }
+            currentButton.disabled = true;
+            currentButton.style.color = "black";
+            currentButton.innerText = "Deleted";
+            let postId = currentButton.dataset.buttonid;
+            fetch(`/delete/post/${postId}`, {
+                method: "DELETE",
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Delete request sent successfully.");
+                } else {
+                    console.log("Delete request failed.");
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+            });
+
+        })
+    })
+</script>
+{% endblock script %}

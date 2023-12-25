@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ post.title }}{% endblock title %}
+{% block style %}
+<style>
+    h1 {
+        font-size: 2rem;
+    }
+
+    #markdownsrc {
+        display: none;
+    }
+
+    .postmedatata {
+        font-style: italic;
+        font-size: small;
+    }
+
+    article {
+        padding: 0 32px;
+        margin-bottom: 30px;
+    }
+
+    .postaction {
+        padding: 0 12px;
+    }
+
+    .postmetadatacontainer {
+        justify-content: space-between;
+    }
+</style>
+{% endblock style %}
+{% block main %}
+
+<article>
+    <h1>{{ post.title }}</h1>
+    <div class="postmetadatacontainer flexbox">
+        <span class="postmedatata">Updated at {{ post.updated.strftime("%B %d") }} classified as
+            <a href="{{ url_for('visitor.archive_post', category=post.category.title )}}">
+                {{ post.category.title }}
+            </a>
+        </span>
+        {% if current_user %}
+        <div class="inlinebox editanddeletepost">
+            <span class="editpostcontent postaction">
+                <a href="{{ url_for('author.update_post', post_id=post.id) }}">Edit</a>
+            </span>
+            <span class="deletepostcontent postaction">
+                <a href="#">Delete</a>
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    <div id="targetDiv"></div>
+    <div id="markdownsrc">{{ post.body }}</div>
+</article>
+{% endblock main %}
+
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/showdown@2.0.3/dist/showdown.min.js"></script>
+<script>
+    const previewArea = document.getElementById("targetDiv");
+    const srcArea = document.getElementById("markdownsrc");
+    const srcText = srcArea.textContent;
+    const converter = new showdown.Converter();
+    let htmlResult = converter.makeHtml(srcText);
+    previewArea.innerHTML = htmlResult;
+    srcArea.textContent = "";
+
+</script>
+{% endblock script %}

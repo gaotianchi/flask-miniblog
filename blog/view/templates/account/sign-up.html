@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="formgroupcontainer_ flexbox">
+    <form action="{{ url_for('account.sign_up') }}" method="post">
+        <div class="inlinebox formgroupcontainer">
+            <div class="formgroup_">
+                <div class="usernameinputgroup flexbox formgroup">
+                    <label class="formlabel" for="username">Username</label>
+                    <input class="forminput" type="text" name="username" id="username" required>
+                    <small class="messagebypasswordvalidator"></small>
+                </div>
+            </div>
+            <div class="formgroup_">
+                <div class="passwordinputgroup flexbox formgroup">
+                    <label class="formlabel" for="password">Password</label>
+                    <input class="forminput" type="password" name="password" id="password" required>
+                    <small class="messagebypasswordvalidator"></small>
+                </div>
+            </div>
+            <div class="formgroup_">
+                <div class="passwordconforminputgroup flexbox formgroup">
+                    <label class="formlabel" for="passwordconfirm">Repeat password</label>
+                    <input class="forminput" type="password" name="passwordconfirm" id="passwordconfirm" required>
+                    <small class="messagebypasswordvalidator"></small>
+                </div>
+            </div>
+            <div class="formgroup_">
+                <div class="submitbtninputcontainer flexbox">
+                    <button type="submit" id="submitbutton">Register</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock main %}
+
+{% block style %}
+<style>
+    .submitbtninputcontainer {
+        justify-content: flex-end;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .formgroupcontainer_ {
+        justify-content: center;
+        margin: 32px auto;
+    }
+
+    .formlabel {
+        font-size: 1.2rem;
+    }
+
+    .forminput {
+        height: 35px;
+        font-size: 1.2rem;
+    }
+
+    .formgroup_ {
+        padding: 0 24px;
+        margin-bottom: 12px;
+    }
+
+    .formgroup {
+        flex-direction: column;
+        align-content: start;
+        max-width: 300px;
+    }
+</style>
+{% endblock style %}
+
+{% block script %}
+<script>
+    const usernameInput = document.getElementById("username");
+    const usernameMessage = document.querySelector(".usernameinputgroup > small");
+
+    const passwordInput = document.getElementById("password");
+    const passwordMessage = document.querySelector(".passwordinputgroup > small");
+
+    const passwordConfirmInput = document.getElementById("passwordconfirm");
+    const passwordConfirmMessage = document.querySelector(".passwordconforminputgroup > small");
+
+    const submitButton = document.getElementById("submitbutton");
+
+    function checkPassword() {
+        let passwordInputValue = passwordInput.value;
+        let passwordConfirmInputValue = passwordConfirmInput.value;
+
+        if (passwordInputValue != passwordConfirmInputValue) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    passwordConfirmInput.addEventListener("input",
+        () => {
+            if (!checkPassword()) {
+                passwordConfirmMessage.textContent = "Please enter the same password as above.";
+                passwordConfirmMessage.classList = "";
+                passwordConfirmMessage.classList.add("invalid");
+            } else {
+                passwordConfirmMessage.textContent = "Password confirmation successful.";
+                passwordConfirmMessage.classList = "";
+                passwordConfirmMessage.classList.add("valid");
+            }
+        }
+    )
+
+</script>
+{% endblock script %}

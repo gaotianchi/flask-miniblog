@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in{% endblock title %}
+
+{% block main %}
+<div class="formgroupcontainer_ flexbox">
+    <form action="{{ url_for('account.sign_in', next=request.args.get('next')) }}" method="post">
+        <div class="inlinebox formgroupcontainer">
+            <div class="formgroup_">
+                <div class="usernameinputgroup flexbox formgroup">
+                    <label class="formlabel" for="username">Username</label>
+                    <input class="forminput" type="text" name="username" id="username" required>
+                    <small class="messagebypasswordvalidator"></small>
+                </div>
+            </div>
+            <div class="formgroup_">
+                <div class="passwordinputgroup flexbox formgroup">
+                    <label class="formlabel" for="password">Password</label>
+                    <input class="forminput" type="password" name="password" id="password" required>
+                    <small class="messagebypasswordvalidator"></small>
+                </div>
+            </div>
+            <div class="formgroup_">
+                <div class="submitbtninputcontainer flexbox">
+                    <button type="submit" id="submitbutton">Login</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock main %}
+
+{% block style %}
+<style>
+    .submitbtninputcontainer {
+        justify-content: flex-end;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .formgroupcontainer_ {
+        justify-content: center;
+        margin: 32px auto;
+    }
+
+    .formlabel {
+        font-size: 1.2rem;
+    }
+
+    .forminput {
+        height: 35px;
+        font-size: 1.2rem;
+    }
+
+    .formgroup_ {
+        padding: 0 24px;
+        margin-bottom: 12px;
+    }
+
+    .formgroup {
+        flex-direction: column;
+        align-content: start;
+        max-width: 300px;
+    }
+</style>
+{% endblock style %}
+
+{% block script %}
+<script>
+
+</script>
+{% endblock script %}

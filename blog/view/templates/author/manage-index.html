@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Manage{% endblock title %}
+
+{% block style %}
+<style>
+    .indexcontainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    }
+
+    .acquisitionscontainer {
+        max-width: 600px;
+        max-height: fit-content;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+        margin: 5px;
+    }
+
+    .actioncontainer {
+        padding: 22px;
+        border: 1px solid black;
+        border-radius: 10px;
+        margin: 5px;
+    }
+
+    .actionnavitems {
+        flex-direction: column;
+    }
+
+    .actionitemcontent {
+        padding: 12px 5px;
+        font-size: 1.3rem;
+    }
+</style>
+{% endblock style %}
+
+{% block main %}
+<div class="indexcontainer">
+
+    <div class="actioncontainer">
+        <div class="navcontainer">
+            <h1 class="actiontitle">Manage blog items</h1>
+            <nav class="flexbox actionnavitems">
+                <a href="{{ url_for('author.manage_post')}}">
+                    <span class="manageposts actionitemcontent">Manage posts</span>
+                </a>
+                <a href="{{ url_for('author.manage_category')}}">
+                    <span class="manageposts actionitemcontent">Manage categories</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+    <div class="acquisitionscontainer">
+        <canvas id="monthly"></canvas>
+    </div>
+    <div class="acquisitionscontainer">
+        <canvas id="postly"></canvas>
+    </div>
+</div>
+{% endblock main %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+
+    async function getMonthly() {
+        try {
+            const response = await fetch('/get/visitors?classification_method=month');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error retrieving data:', error);
+            return [];
+        }
+    }
+    async function getPostly() {
+        try {
+            const response = await fetch('/get/visitors?classification_method=article');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error retrieving data:', error);
+            return [];
+        }
+    }
+
+    async function createChart() {
+        const monthlyData = await getMonthly();
+        const postlyData = await getPostly();
+
+        const chartElementMonthly = document.getElementById('monthly');
+        const chartElementPostly = document.getElementById('postly');
+
+        const chartMonthly = new Chart(chartElementMonthly, {
+            type: 'bar',
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Website visits per month.'
+                    }
+                }
+            },
+            data: {
+                labels: monthlyData.map(row => row.month),
+                datasets: [{
+                    label: 'Views',
+                    data: monthlyData.map(row => row.count)
+                }]
+            }
+        });
+        const chartPostly = new Chart(chartElementPostly, {
+            type: 'bar',
+            options: {
+                indexAxis: 'y',
+                elements: {
+                    bar: {
+                        minBarLength: 100
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'The ten most visited articles.'
+                    }
+                }
+            },
+            data: {
+                labels: postlyData.map(row => row.article.substring(0, 50) + "..."),
+                datasets: [{
+                    label: "Views",
+                    data: postlyData.map(row => row.count)
+                }]
+            }
+        });
+    }
+
+    createChart()
+</script>
+{% endblock script %}
